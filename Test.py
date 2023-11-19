@@ -1,3 +1,14 @@
+import os
+
+def clear_screen():
+    # 判断操作系统类型
+    if os.name == 'posix':  # Unix/Linux/MacOS/BSD等
+        os.system('clear')
+    elif os.name == 'nt':  # Windows
+        os.system('cls')
+    else:
+        # 无法识别的操作系统类型
+        print("无法清屏：不支持的操作系统")
 class Menu:
     def __init__(self, title, options):
         self.title = title
@@ -24,8 +35,8 @@ class SubMenu(Menu):
         print(f"You selected: {selected_option}")
         # 在这里添加你希望执行的逻辑
 
-
-main_menu = Menu("主菜单", ["子菜单 1", "子菜单 2", "退出"])
+test = ("请输入你的选择（输入0返回）：")
+main_menu = Menu("----主菜单----", ["子菜单 1", "子菜单 2", "退出"])
 
 submenu1 = SubMenu("子菜单 1", ["选项 1", "选项 2", "返回"], main_menu)
 submenu2 = SubMenu("子菜单 2", ["选项 3", "选项 4", "返回"], main_menu)
@@ -44,65 +55,104 @@ submenu2_1_2 = SubMenu("子菜单 2.1.2", ["选项 2.1.3", "选项 2.1.4", "返�
 
 main_menu.select_option(0)
 
+#菜单选择
 while True:
+#主菜单
     main_menu.display()
-    choice = int(input("请输入你的选择（输入0退出）："))
+    choice = int(input(test))
     if choice == 0:
-        break
-    main_menu.select_option(choice)
+        exit()
 
     if choice == 1:
+        clear_screen()
         submenu1.display()
-        sub_choice = int(input("请输入你的选择（输入0返回）："))
+        sub_choice = int(input(test))
+    elif choice == 2:
+        clear_screen()
+        submenu2.display()
+        sub_choice = int(input(test))
         if sub_choice == 0:
-            continue
-        submenu1.select_option(sub_choice)
+            exit()
+#二级菜单
+        if sub_choice == 1:
+            clear_screen()
+            submenu1_1.display()
+            sub_sub_choice = int(input(test))
+        elif sub_choice == 2:
+            clear_screen()
+            submenu1_2
+            sub_sub_choice = int(input(test))
+
+# 三级菜单
+            if sub_sub_choice == 1:
+                clear_screen()
+                submenu2_1.display()
+                sub_sub_sub_choice = int(input(test))
+            elif sub_sub_choice == 2:
+                clear_screen()
+                submenu2_2.display()
+                sub_sub_sub_choice = int(input(test))
+
+
+
+#四级菜单
+        
+
+
+
+
 
         if sub_choice == 1:
+            clear_screen()
             submenu1_1.display()
             sub_sub_choice = int(input("请输入你的选择（输入0返回）："))
             if sub_sub_choice == 0:
-                continue
-            submenu1_1.select_option(sub_sub_choice)
+                exit()
 
             if sub_sub_choice == 1:
+                clear_screen()
                 submenu1_1_1.display()
                 sub_sub_sub_choice = int(input("请输入你的选择（输入0返回）："))
-                submenu1_1_1.select_option(sub_sub_sub_choice)
             elif sub_sub_choice == 2:
+                clear_screen()
                 submenu1_1_2.display()
                 sub_sub_sub_choice = int(input("请输入你的选择（输入0返回）："))
-                submenu1_1_2.select_option(sub_sub_sub_choice)
 
         elif sub_choice == 2:
+            clear_screen()
             submenu1_2.display()
             sub_sub_choice = int(input("请输入你的选择（输入0返回）："))
-            submenu1_2.select_option(sub_sub_choice)
+
+
+
+
 
     elif choice == 2:
+        clear_screen()
         submenu2.display()
         sub_choice = int(input("请输入你的选择（输入0返回）："))
         if sub_choice == 0:
-            continue
-        submenu2.select_option(sub_choice)
+            exit()
 
         if sub_choice == 1:
+            clear_screen()
             submenu2_1.display()
             sub_sub_choice = int(input("请输入你的选择（输入0返回）："))
             if sub_sub_choice == 0:
-                continue
-            submenu2_1.select_option(sub_sub_choice)
+                exit()
 
             if sub_sub_choice == 1:
+                clear_screen()
                 submenu2_1_1.display()
                 sub_sub_sub_choice = int(input("请输入你的选择（输入0返回）："))
-                submenu2_1_1.select_option(sub_sub_sub_choice)
             elif sub_sub_choice == 2:
+                clear_screen()
                 submenu2_1_2.display()
                 sub_sub_sub_choice = int(input("请输入你的选择（输入0返回）："))
-                submenu2_1_2.select_option(sub_sub_sub_choice)
 
         elif sub_choice == 2:
+            clear_screen()
             submenu2_2.display()
             sub_sub_choice = int(input("请输入你的选择（输入0返回）："))
+
             submenu2_2.select_option(sub_sub_choice)
