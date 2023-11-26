@@ -39,12 +39,19 @@ class SubMenu(Menu):
         # 在这里添加你希望执行的逻辑
 
 
-text = "请输入你的选择（输入t退出）："
+text = '-'*23 + "\n请输入你的选择（输入t退出）："
 
 main_menu = Menu("---------主菜单---------", ["minecraft server", "forge server", "fabric server","cat server","mo server","bukkit server","spigot server","paper server"])
 
-core_choice1 = SubMenu("子菜单 1", ["选项 1", "选项 2", "返回"], main_menu)
-core_choice2 = SubMenu("子菜单 2", ["选项 3", "选项 4", "返回"], main_menu)
+core_choice1 = SubMenu("minecrafr server", ["选项 1", "选项 2", "返回"], main_menu)
+core_choice2 = SubMenu("forge server", ["选项 3", "选项 4", "返回"], main_menu)
+core_choice3 = SubMenu("fabric server",["选项5","选项6","返回"],main_menu)
+core_choice4 = SubMenu("cat server",["选项7","选项8","返回"],main_menu)
+core_choice5 = SubMenu("mo server",["选项9","选项10","返回"],main_menu)
+core_choice6 = SubMenu("bukkit server",["选项11","选项12","返回"],main_menu)
+core_choice7 = SubMenu("spigot server",["选项12","选项13","返回"],main_menu)
+core_choice8 = SubMenu("paper server",["选项14","选项15","返回"],main_menu)
+
 
 submenu1_1 = SubMenu("子菜单 1.1", ["选项 1.1", "选项 1.2", "返回"], core_choice1)
 submenu1_2 = SubMenu("子菜单 1.2", ["选项 1.3", "选项 1.4", "返回"], core_choice1)
