@@ -1,5 +1,6 @@
 import os
 
+
 def clear_screen():
     # 判断操作系统类型
     if os.name == 'posix':  # Unix/Linux/MacOS/BSD等
@@ -9,6 +10,8 @@ def clear_screen():
     else:
         # 无法识别的操作系统类型
         print("无法清屏：不支持的操作系统")
+
+
 class Menu:
     def __init__(self, title, options):
         self.title = title
@@ -35,9 +38,10 @@ class SubMenu(Menu):
         print(f"You selected: {selected_option}")
         # 在这里添加你希望执行的逻辑
 
+
 text = "请输入你的选择（输入t退出）："
 
-main_menu = Menu("----主菜单----", ["子菜单 1", "子菜单 2", "退出"])
+main_menu = Menu("----核心选择----", ["子菜单 1", "子菜单 2", "退出"])
 
 submenu1 = SubMenu("子菜单 1", ["选项 1", "选项 2", "返回"], main_menu)
 submenu2 = SubMenu("子菜单 2", ["选项 3", "选项 4", "返回"], main_menu)
@@ -59,7 +63,7 @@ main_menu.select_option(0)
 while True:
     main_menu.display()
     choice = int(input(text))
-    if choice == t:
+    if choice == 0:
         exit()
 
     if choice == 1:
