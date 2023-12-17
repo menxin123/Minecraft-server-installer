@@ -10,124 +10,82 @@ def clear_screen():
     else:
         # 无法识别的操作系统类型
         print("无法清屏：不支持的操作系统")
+def exit():
+    clear_screen()
+    exit
+    print("已退出")
+    input("按下任意键继续...")
 
+def execute_option_logic(content_list, item_functions):
+    items_per_page = 3
+    current_page = 0
+    max_page_num = len(content_list) // items_per_page + 1
 
-class Menu:
-    def __init__(self, title, options):
-        self.title = title
-        self.options = options
+    while True:
+        print("当前页内容：")
+        start_index = current_page * items_per_page
+        end_index = (current_page + 1) * items_per_page
+        for i in range(start_index, min(end_index, len(content_list))):
+            print(f"{i+1}. {content_list[i]}")
 
-    def display(self):
-        print(self.title)
-        for index, option in enumerate(self.options):
-            print(f"{index + 1}. {option}")
-
-    def select_option(self, choice):
-        pass
-
-
-class SubMenu(Menu):
-    def __init__(self, title, options, parent_menu):
-        super().__init__(title, options)
-        self.parent_menu = parent_menu
-
-    def select_option(self, choice):
-        if choice == 0:
-            return
-        selected_option = self.options[choice - 1]
-        print(f"You selected: {selected_option}")
-        # 在这里添加你希望执行的逻辑
+        user_input = input("输入a切换上一页，输入b切换下一页，输入q退出，选择内容编号执行自定义函数：")
+        if user_input == 'a':
+            current_page -= 1
+            if current_page < 0:
+                current_page = max_page_num - 1
+        elif user_input == 'b':
+            current_page += 1
+            if current_page >= max_page_num:
+                current_page = 0
+        elif user_input == 'q':
+            break
+        else:
+            try:
+                selected_item_index = int(user_input) - 1
+                if start_index <= selected_item_index < end_index and selected_item_index in item_functions:
+                    item_functions[selected_item_index]()  # 调用相应的函数
+                else:
+                    print("无效的选择，请重新输入。")
+            except ValueError:
+                print("无效的选择，请重新输入。")
 
 
 text = '-'*23 + "\n请输入你的选择（输入t退出）："
 
-main_menu = Menu("---------主菜单---------", ["minecraft server", "forge server", "fabric server","cat server","mo server","bukkit server","spigot server","paper server"])
 
-core_choice1 = SubMenu("minecrafr server", sorted(["1.20.2", "1.20.1", "1.20", "1.19.4", "1.19.3", "1.19.2", "1.19.1", "1.19", "1.18.2", "1.18.1", "1.18", "1.17.1", "1.17", "1.16.5", "1.16.4", "1.16.3", "1.16.2", "1.16.1", "1.16", "1.15.2", "1.15.1", "1.15", "1.14.4", "1.14.3", "1.14.2", "1.14.1", "1.14", "1.13.2", "1.13.1", "1.13", "1.12.2", "1.12.1", "1.12", "1.11.2", "1.11.1", "1.11", "1.10.2", "1.10.1", "1.10", "1.9.4", "1.9.3", "1.9.2", "1.9.1", "1.9", "1.8.9", "1.8.8", "1.8.7", "1.8.6", "1.8.5", "1.8.4", "1.8.3", "1.8.2", "1.8.1", "1.8", "1.7.10", "1.7.9", "1.7.8", "1.7.7", "1.7.6", "1.7.5", "1.7.4", "1.7.2", "1.6.4", "1.6.2", "1.6.1", "1.5.2", "1.5.1", "1.5", "1.4.7", "1.4.6", "1.4.5", "1.4.4", "1.4.2", "1.3.2", "1.3.1", "1.2.5", "1.2.4", "1.2.3", "1.2.2", "1.2.1", "1.1", "1.0.1", "1.0.0"]), main_menu)
-core_choice2 = SubMenu("forge server", sorted(["1.20", "1.20.4", "1.20.3", "1.20.2", "1.20.1", "1.20", "1.19", "1.19.4", "1.19.3", "1.19.2", "1.19.1", "1.19", "1.18", "1.18.2", "1.18.1", "1.18", "1.17.1", "1.16.5", "1.16.4", "1.16.3", "1.16.2", "1.16.1", "1.15", "1.15.2", "1.15.1", "1.15", "1.14.4", "1.14.3", "1.14.2", "1.13.2", "1.12", "1.12.2", "1.12.1", "1.12", "1.11", "1.11.2", "1.11", "1.10", "1.10.2", "1.10", "1.9", "1.9.4", "1.9", "1.8", "1.8.9", "1.8.8", "1.8", "1.7.10", "1.7.10_pre4", "1.7.2", "1.6.4", "1.6.3", "1.6.2", "1.6.1", "1.5", "1.5.2", "1.5.1", "1.5", "1.4.7", "1.4.6", "1.4.5", "1.4.4", "1.4.3", "1.4.2", "1.4.1", "1.4.0", "1.3.2", "1.2.5", "1.2.4", "1.2.3", "1.1"]), main_menu)
-core_choice3 = SubMenu("fabric server",["选项5","选项6","返回"],main_menu)
-core_choice4 = SubMenu("cat server",["选项7","选项8","返回"],main_menu)
-core_choice5 = SubMenu("mo server",["选项9","选项10","返回"],main_menu)
-core_choice6 = SubMenu("bukkit server",["选项11","选项12","返回"],main_menu)
-core_choice7 = SubMenu("spigot server",["选项12","选项13","返回"],main_menu)
-core_choice8 = SubMenu("paper server",["选项14","选项15","返回"],main_menu)
+Minecrafr_server = ("Minecrafr server", sorted([ "1.20.4","1.20.3","1.20.2", "1.20.1", "1.20", "1.19.4", "1.19.3", "1.19.2", "1.19.1", "1.19", "1.18.2", "1.18.1", "1.18", "1.17.1", "1.17", "1.16.5", "1.16.4", "1.16.3", "1.16.2", "1.16.1", "1.16", "1.15.2", "1.15.1", "1.15", "1.14.4", "1.14.3", "1.14.2", "1.14.1", "1.14", "1.13.2", "1.13.1", "1.13", "1.12.2", "1.12.1", "1.12", "1.11.2", "1.11.1", "1.11", "1.10.2", "1.10.1", "1.10", "1.9.4", "1.9.3", "1.9.2", "1.9.1", "1.9", "1.8.9", "1.8.8", "1.8.7", "1.8.6", "1.8.5", "1.8.4", "1.8.3", "1.8.2", "1.8.1", "1.8", "1.7.10", "1.7.9", "1.7.8", "1.7.7", "1.7.6", "1.7.5", "1.7.4", "1.7.2", "1.6.4", "1.6.2", "1.6.1", "1.5.2", "1.5.1", "1.5", "1.4.7", "1.4.6", "1.4.5", "1.4.4", "1.4.2", "1.3.2", "1.3.1", "1.2.5", "1.2.4", "1.2.3", "1.2.2", "1.2.1", "1.1", "1.0.1", "1.0.0" ]))
+Forge_server = ("Forge server", sorted([ "1.20.4", "1.20.3", "1.20.2", "1.20.1", "1.20", "1.19", "1.19.4", "1.19.3", "1.19.2", "1.19.1", "1.19", "1.18", "1.18.2", "1.18.1", "1.18", "1.17.1", "1.16.5", "1.16.4", "1.16.3", "1.16.2", "1.16.1", "1.15", "1.15.2", "1.15.1", "1.15", "1.14.4", "1.14.3", "1.14.2", "1.13.2", "1.12", "1.12.2", "1.12.1", "1.12", "1.11", "1.11.2", "1.11", "1.10", "1.10.2", "1.10", "1.9", "1.9.4", "1.9", "1.8", "1.8.9", "1.8.8", "1.8", "1.7.10", "1.7.10_pre4", "1.7.2", "1.6.4", "1.6.3", "1.6.2", "1.6.1", "1.5", "1.5.2", "1.5.1", "1.5", "1.4.7", "1.4.6", "1.4.5", "1.4.4", "1.4.3", "1.4.2", "1.4.1", "1.4.0", "1.3.2", "1.2.5", "1.2.4", "1.2.3", "1.1" ]))
+Fabric_server = ("Fabric server",sorted([ "1.20.4", "1.20.3", "1.20.2", "1.20.1", "1.20", "1.19.4", "1.19.3", "1.19.2", "1.19.1", "1.19", "1.18.2", "1.18.1", "1.18", "1.17.1", "1.17", "1.16.5", "1.16.4", "1.16.3", "1.16.2", "1.16.1", "1.16", "1.15.2", "1.15.1", "1.15", "1.14.4", "1.14.3", "1.14.2", "1.14.1", "1.14" ]))
+Cat_server = ("Cat server",sorted(["1.18.2","1.16.5","1.12.2" ]))
+Mohist_server = ("Mohist server",sorted([ "1.7.10","1.12.2","1.16.5","1.18.2","1.19.2","1.19.4","1.20","1.20.1","1.20.2" ]))
+Banner_server = ("Banner server",sorted([ "1.19.4","1.20","1.20.1" ]))
+Craftbukkit_server = ("Craftbukkit server",sorted([ "1.20.4", "1.20.2", "1.20.1", "1.19.4", "1.19.3", "1.19.2", "1.19.1", "1.19", "1.18.2", "1.18.1", "1.18", "1.17.1", "1.17", "1.16.5", "1.16.4", "1.16.3", "1.16.2", "1.16.1", "1.15.2", "1.15.1", "1.15", "1.14.4", "1.14.3", "1.14.2", "1.14.1", "1.14", "1.13.2", "1.13.1", "1.13", "1.12.2", "1.12.1", "1.12", "1.11.2", "1.11.1", "1.11", "1.10.2", "1.10", "1.9.4", "1.9.2", "1.9", "1.8.8", "1.8.7", "1.8.6", "1.8.5", "1.8.4", "1.8.3", "1.8", "1.7.10", "1.7.9", "1.7.8", "1.7.5", "1.7.2", "1.6.4", "1.6.2", "1.6.1", "1.5.2", "1.5.1", "1.5", "1.4.7", "1.4.6", "1.4.5", "1.4.2", "1.3.2", "1.3.1", "1.2.5", "1.2.4", "1.2.3", "1.2.2", "1.1", "1.0.0" ]))
+Spigot_server = ("Spigot server",sorted([ "1.20.4", "1.20.2", "1.20.1", "1.19.4", "1.19.3", "1.19.2", "1.19.1", "1.19", "1.18.2", "1.18.1", "1.18", "1.17.1", "1.17", "1.16.5", "1.16.4", "1.16.3", "1.16.2", "1.16.1", "1.15.2", "1.15.1", "1.15", "1.14.4", "1.14.3", "1.14.2", "1.14.1", "1.14", "1.13.2", "1.13.1", "1.13", "1.12.2", "1.12.1", "1.12", "1.11.2", "1.11.1", "1.11", "1.10.2", "1.10", "1.9.4", "1.9.2", "1.9", "1.8.8", "1.8.7", "1.8.6", "1.8.5", "1.8.4", "1.8.3", "1.8", "1.7.10", "1.7.9", "1.7.8", "1.7.5", "1.7.2", "1.6.4", "1.6.2", "1.5.2", "1.5.1", "1.4.7", "1.4.6" ]))
+Paper_server = ("Paper server",sorted([ "1.20.4", "1.20.2", "1.20.1", "1.20", "1.19.4", "1.19.3", "1.19.2", "1.19.1", "1.19", "1.18.2", "1.18.1", "1.18", "1.17.1", "1.17", "1.16.5", "1.16.4", "1.16.3", "1.16.2", "1.16.1", "1.15.2", "1.15.1", "1.15", "1.14.4", "1.14.3", "1.14.2", "1.14.1", "1.14", "1.13.2", "1.13.1", "1.13", "1.13-pre7", "1.12.2", "1.12.1", "1.12", "1.11.2", "1.10.2", "1.9.4", "1.8.8" ]))
+Velocity_server = ("Velocity server",sorted([ "3.3.0-SNAPSHOT", "3.2.0-SNAPSHOT", "3.1.2-SNAPSHOT", "3.1.1-SNAPSHOT", "3.1.1", "3.1.0", "1.1.9", "1.0.10" ]))
+Waterfall_server = ("Waterfall server",sorted([ "1.20", "1.19", "1.18", "1.17", "1.16", "1.15", "1.14", "1.13", "1.12", "1.11" ]))
 
 
-submenu1_1 = SubMenu("子菜单 1.1", ["选项 1.1", "选项 1.2", "返回"], core_choice1)
-submenu1_2 = SubMenu("子菜单 1.2", ["选项 1.3", "选项 1.4", "返回"], core_choice1)
 
-submenu2_1 = SubMenu("子菜单 2.1", ["选项 2.1", "选项 2.2", "返回"], core_choice2)
-submenu2_2 = SubMenu("子菜单 2.2", ["选项 2.3", "选项 2.4", "返回"], core_choice2)
 
-submenu1_1_1 = SubMenu("子菜单 1.1.1", ["选项 1.1.1", "选项 1.1.2", "返回"], submenu1_1)
-submenu1_1_2 = SubMenu("子菜单 1.1.2", ["选项 1.1.3", "选项 1.1.4", "返回"], submenu1_1)
 
-submenu2_1_1 = SubMenu("子菜单 2.1.1", ["选项 2.1.1", "选项 2.1.2", "返回"], submenu2_1)
-submenu2_1_2 = SubMenu("子菜单 2.1.2", ["选项 2.1.3", "选项 2.1.4", "返回"], submenu2_1)
 
-main_menu.select_option(0)
 
-while True:
-    main_menu.display()
-    choice = int(input(text))
-    if choice == 0:
-        exit()
 
-    if choice == 1:
-        clear_screen()
-        core_choice1.display()
-        sub_choice = int(input("请输入你的选择（输入t返回）："))
-        if sub_choice == 0:
+def main_menu():
+    while True:
+        user_input = input ("---------主菜单---------\n1.minecraft server\n2.forge server\n3.fabric server\n4.cat "
+                            "server\n5.mo server\n6.Mohist server\n7.bukkit server\n8.spigot server\n9.paper "
+                            "server\n10.Velocity server\n11.Waterfall_server\n输入数字选择，输入q退出\n")
+        if user_input == '1':
+            execute_option_logic(content_list1, item_functions1)
+        elif user_input == '2':
+            execute_option_logic(content_list2, item_functions2)
+        elif user_input == 'q':
             exit()
+            break
+        else:
+            print("无效的选择，请重新输入。")
 
-        if sub_choice == 1:
-            clear_screen()
-            submenu1_1.display()
-            sub_sub_choice = int(input("请输入你的选择（输入0返回）："))
-            if sub_sub_choice == 0:
-                exit()
-
-            if sub_sub_choice == 1:
-                clear_screen()
-                submenu1_1_1.display()
-                sub_sub_sub_choice = int(input("请输入你的选择（输入0返回）："))
-            elif sub_sub_choice == 2:
-                clear_screen()
-                submenu1_1_2.display()
-                sub_sub_sub_choice = int(input("请输入你的选择（输入0返回）："))
-
-        elif sub_choice == 2:
-            clear_screen()
-            submenu1_2.display()
-            sub_sub_choice = int(input("请输入你的选择（输入0返回）："))
-
-
-    elif choice == 2:
-        clear_screen()
-        core_choice2.display()
-        sub_choice = int(input("请输入你的选择（输入tt返回）："))
-        if sub_choice == 0:
-            exit()
-
-        if sub_choice == 1:
-            clear_screen()
-            submenu2_1.display()
-            sub_sub_choice = int(input("请输入你的选择（输入0返回）："))
-            if sub_sub_choice == 0:
-                exit()
-
-            if sub_sub_choice == 1:
-                clear_screen()
-                submenu2_1_1.display()
-                sub_sub_sub_choice = int(input("请输入你的选择（输入0返回）："))
-            elif sub_sub_choice == 2:
-                clear_screen()
-                submenu2_1_2.display()
-                sub_sub_sub_choice = int(input("请输入你的选择（输入0返回）："))
-
-        elif sub_choice == 2:
-            clear_screen()
-            submenu2_2.display()
-            sub_sub_choice = int(input("请输入你的选择（输入0返回）："))
-
-            submenu2_2.select_option(sub_sub_choice)
+# 调用主菜单函数
+main_menu()

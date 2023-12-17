@@ -16,8 +16,6 @@ def replace_text(file_path, old_text, new_text):
     except Exception as e:
         print("发生错误：", e)
 
-
-# 使用示例
 file_path = "test.txt"
 old_text = "'"
 new_text = 'a'
