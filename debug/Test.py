@@ -1,10 +1,11 @@
 import os
 import requests
 from tqdm import tqdm
-
+import zipfile
+import shutil
 download_urls = {
     "1.20.4": "https://piston-data.mojang.com/v1/objects/8dd1a28015f51b1803213892b50b7b4fc76e594d/server.jar",
-    "1.20.3": "https://piston-data.mojang.com/v1/objects/4fb536bfd4a83d61cdbaf684b8d311e66e7d4c49/server.jar"
+    "java-lite": "https://download.bell-sw.com/java/17.0.9+11/bellsoft-jdk17.0.9+11-windows-amd64-lite.zip"
     # ... 其他版本的 URL ...
 }
 
@@ -28,37 +29,61 @@ def prompt_for_download_directory():
 
 
 # 创建下载函数
-def make_download_function(url, destination_filename):
-    def download_function(download_directory):
-        destination = os.path.join(download_directory, destination_filename)
+# 根据URL获取文件名
+def get_filename_from_url(url):
+    return url.split('/')[-1]
+
+# 创建下载并解压函数
+def make_download_and_extract_function(url):
+    def download_and_extract(download_directory):
+        filename = get_filename_from_url(url)
+        destination = os.path.join(download_directory, filename)
+
+        # 下载文件
         response = requests.get(url, stream=True)
         if response.status_code == 200:
-            total_size_in_bytes = int(response.headers.get('content-length', 0))
-            progress_bar = tqdm(total=total_size_in_bytes, unit='iB', unit_scale=True)
-            with open(destination, 'wb') as file:
+            with open(destination, 'wb') as file, tqdm(
+                desc=filename,
+                total=int(response.headers.get('content-length', 0)),
+                unit='iB',
+                unit_scale=True,
+                unit_divisor=1024,
+            ) as bar:
                 for chunk in response.iter_content(chunk_size=1024):
-                    progress_bar.update(len(chunk))
+                    bar.update(len(chunk))
                     file.write(chunk)
-            progress_bar.close()
-            print(f"Download completed: {destination}")
+            print(f"Downloaded: {destination}")
+
+            # 如果文件是ZIP格式，解压它
+            if destination.endswith('.zip'):
+                with zipfile.ZipFile(destination, 'r') as zip_ref:
+                    zip_ref.extractall(download_directory)
+                print(f"Extracted: {destination}")
+
+                # 删除原始的ZIP文件
+                os.remove(destination)
+                print(f"Deleted ZIP file: {destination}")
+
+                # 查找和重命名特定文件夹
+                for folder_name in ["jdk-17.0.9-lite", "jdk-11.0.21-lite", "jdk8u392-lite"]:
+                    folder_path = os.path.join(download_directory, folder_name)
+                    if os.path.exists(folder_path):
+                        java_path = os.path.join(download_directory, 'java')
+                        if os.path.exists(java_path):
+                            shutil.rmtree(java_path)
+                        shutil.move(folder_path, java_path)
+                        print(f"Renamed '{folder_name}' to 'java'")
+                        break  # 只重命名找到的第一个匹配的文件夹
         else:
-            print(f"Download failed with status code: {response.status_code}")
+            print(f"Failed to download: {url}")
+    return download_and_extract
 
-    return download_function
 
 
-# 退出程序
-def exit_program():
-    print("已完成")
-    input("按下任意键继续...")
-    exit()
 
 
 # 创建下载函数的字典
-download_functions = {}
-for version, url in download_urls.items():
-    destination_filename = f"server.{version}.jar"
-    download_functions[version] = make_download_function(url, destination_filename)
+download_functions = {version: make_download_and_extract_function(url) for version, url in download_urls.items()}
 
 
 def clear_screen():
@@ -119,13 +144,11 @@ def execute_option_logic(content_tuple, item_functions):
 
 
 def a():
-    version_to_download = ["1.20.4","1.20.3"]  # 用户选择版本
+    clear_screen()
     download_directory = prompt_for_download_directory()
-    for version in version_to_download:
-        if version in download_functions:
-            download_functions[version](download_directory)
-        else:
-            print(f"没有找到版本 {version} 的下载函数。")
+    # 下载并解压所有指定的版本
+    for version in ["1.20.4", "java-lite"]:
+        download_functions[version](download_directory)
     exit_program()
 
 
