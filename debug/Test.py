@@ -4,6 +4,7 @@ from tqdm import tqdm
 
 download_urls = {
     "1.20.4": "https://piston-data.mojang.com/v1/objects/8dd1a28015f51b1803213892b50b7b4fc76e594d/server.jar",
+    "1.20.3": "https://piston-data.mojang.com/v1/objects/4fb536bfd4a83d61cdbaf684b8d311e66e7d4c49/server.jar"
     # ... 其他版本的 URL ...
 }
 
@@ -118,9 +119,13 @@ def execute_option_logic(content_tuple, item_functions):
 
 
 def a():
-    version_to_download = "1.20.4"  # 用户选择版本
+    version_to_download = ["1.20.4","1.20.3"]  # 用户选择版本
     download_directory = prompt_for_download_directory()
-    download_functions[version_to_download](download_directory)
+    for version in version_to_download:
+        if version in download_functions:
+            download_functions[version](download_directory)
+        else:
+            print(f"没有找到版本 {version} 的下载函数。")
     exit_program()
 
 
