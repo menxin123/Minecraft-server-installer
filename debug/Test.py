@@ -1,13 +1,87 @@
 import os
+import platform
 import requests
 from tqdm import tqdm
 import zipfile
 import shutil
+
+def get_os_arch():
+    os_name = platform.system().lower()
+    arch, _ = platform.architecture()
+    return os_name, arch
+
+java_versions = {
+    "windows": {
+        "x86": {
+            "v1": "https://download.bell-sw.com/java/17.0.9+11/bellsoft-jdk17.0.9+11-windows-i586-lite.zip",
+            "v2": "https://download.bell-sw.com/java/11.0.21+10/bellsoft-jdk11.0.21+10-windows-i586-lite.zip",
+            "v3": "https://download.bell-sw.com/java/8u392+9/bellsoft-jdk8u392+9-windows-i586-lite.zip",
+        },
+        "x64": {
+            "v1": "https://download.bell-sw.com/java/17.0.9+11/bellsoft-jdk17.0.9+11-windows-amd64-lite.zip",
+            "v2": "https://download.bell-sw.com/java/11.0.21+10/bellsoft-jdk11.0.21+10-windows-amd64-lite.zip",
+            "v3": "https://download.bell-sw.com/java/8u392+9/bellsoft-jdk8u392+9-windows-amd64-lite.zip",
+        },
+        "arm": {
+            "v1": "",
+            "v2": "",
+            "v3": ""
+        }
+    },
+    "linux": {
+        "x86": {
+            "v1": "linux-x86-java-lite-v1-url",
+            "v2": "linux-x86-java-lite-v2-url",
+            "v3": "linux-x86-java-lite-v3-url",
+        },
+        "x64": {
+            "v1": "linux-x64-java-lite-v1-url",
+            "v2": "linux-x64-java-lite-v2-url",
+            "v3": "linux-x64-java-lite-v3-url",
+        },
+        "arm": {
+            "v1": "linux-arm-java-lite-v1-url",
+            "v2": "linux-arm-java-lite-v2-url",
+            "v3": "linux-arm-java-lite-v3-url",
+        }
+    },
+    "darwin": {
+        "x64": {
+            "v1": "macos-x64-java-lite-v1-url",
+            "v2": "macos-x64-java-lite-v2-url",
+            "v3": "macos-x64-java-lite-v3-url",
+        },
+        "arm": {
+            "v1": "macos-arm-java-lite-v1-url",
+            "v2": "macos-arm-java-lite-v2-url",
+            "v3": "macos-arm-java-lite-v3-url",
+        }
+    }
+}
+
+def get_java_lite_url(os_name, arch_key, version_identifier):
+    if os_name in java_versions and arch_key in java_versions[os_name]:
+        if version_identifier in java_versions[os_name][arch_key]:
+            return java_versions[os_name][arch_key][version_identifier]
+    raise ValueError(f"No Java-Lite URL found for OS: {os_name}, Arch: {arch_key}, Version: {version_identifier}")
+
+os_name, arch = get_os_arch()
+arch_key = "x64" if "64" in arch else "x86"
+if "arm" in arch.lower() or "aarch64" in arch.lower():
+    arch_key = "arm"
+
+java_lite_v1_url = get_java_lite_url(os_name, arch_key, "v1")
+java_lite_v2_url = get_java_lite_url(os_name, arch_key, "v2")
+java_lite_v3_url = get_java_lite_url(os_name, arch_key, "v3")
+
 download_urls = {
     "1.20.4": "https://piston-data.mojang.com/v1/objects/8dd1a28015f51b1803213892b50b7b4fc76e594d/server.jar",
-    "java-lite": "https://download.bell-sw.com/java/17.0.9+11/bellsoft-jdk17.0.9+11-windows-amd64-lite.zip"
+    "java-lite-v1": java_lite_v1_url,
+    "java-lite-v2": java_lite_v2_url,
+    "java-lite-v3": java_lite_v3_url
     # ... 其他版本的 URL ...
 }
+
 
 
 # 检查并创建服务器目录
@@ -33,6 +107,7 @@ def prompt_for_download_directory():
 def get_filename_from_url(url):
     return url.split('/')[-1]
 
+
 # 创建下载并解压函数
 def make_download_and_extract_function(url):
     def download_and_extract(download_directory):
@@ -43,11 +118,11 @@ def make_download_and_extract_function(url):
         response = requests.get(url, stream=True)
         if response.status_code == 200:
             with open(destination, 'wb') as file, tqdm(
-                desc=filename,
-                total=int(response.headers.get('content-length', 0)),
-                unit='iB',
-                unit_scale=True,
-                unit_divisor=1024,
+                    desc=filename,
+                    total=int(response.headers.get('content-length', 0)),
+                    unit='iB',
+                    unit_scale=True,
+                    unit_divisor=1024,
             ) as bar:
                 for chunk in response.iter_content(chunk_size=1024):
                     bar.update(len(chunk))
@@ -76,14 +151,30 @@ def make_download_and_extract_function(url):
                         break  # 只重命名找到的第一个匹配的文件夹
         else:
             print(f"Failed to download: {url}")
+
     return download_and_extract
-
-
-
 
 
 # 创建下载函数的字典
 download_functions = {version: make_download_and_extract_function(url) for version, url in download_urls.items()}
+
+
+def download_files(download_directory, versions):
+    for version in versions:
+        if version in download_functions:
+            download_functions[version](download_directory)
+        else:
+            print(f"Version {version} not found in download functions.")
+
+
+# 函数生成器，用于创建 item_functions1 中的选项函数
+def create_option_function(versions):
+    def option_function():
+        download_directory = prompt_for_download_directory()
+        download_files(download_directory, versions)
+        exit_program()
+
+    return option_function
 
 
 def clear_screen():
@@ -143,19 +234,11 @@ def execute_option_logic(content_tuple, item_functions):
                 print("\n无效的选择，请重新输入。")
 
 
-def a():
-    clear_screen()
-    download_directory = prompt_for_download_directory()
-    # 下载并解压所有指定的版本
-    for version in ["1.20.4", "java-lite"]:
-        download_functions[version](download_directory)
-    exit_program()
-
-
 item_functions1 = {
-    0: a,
-    1: lambda: print("2b"),
-    2: lambda: print("3c")
+    0: create_option_function(["1.20.4", "java-lite-v1"]),
+    1: create_option_function(["1.20.3", "java-lite"]),
+    2: create_option_function(["1.20.2", "java-lite"]),
+    # ... 其他选项 ...
 }
 item_functions2 = {
     0: lambda: print("1d"),
