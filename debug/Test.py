@@ -13,6 +13,22 @@ def get_os_arch():
     return os_name, arch
 
 
+def clear_screen():
+    if os.name == 'posix':
+        os.system('clear')
+    elif os.name == 'nt':
+        os.system('cls')
+    else:
+        print("无法清屏：不支持的操作系统")
+
+
+def exit_program():
+    clear_screen()
+    print("已完成")
+    input("按下任意键继续...")
+    exit()
+
+
 java_versions = {
     "windows": {
         "x86": {
@@ -84,10 +100,10 @@ java_lite_v3_url = get_java_lite_url(os_name, arch_key, "v3")
 
 download_urls = {
     "Minecraft_server_1.20.4": "https://piston-data.mojang.com/v1/objects/8dd1a28015f51b1803213892b50b7b4fc76e594d/server.jar",
-    "Minecraft_server_1.20.3": "xxx",
-    "Minecraft_server_1.20.2": "xxx",
-    "Minecraft_server_1.20.1": "xxx",
-    "Minecraft_server_1.20": "xxx",
+    "Minecraft_server_1.20.3": "https://piston-data.mojang.com/v1/objects/4fb536bfd4a83d61cdbaf684b8d311e66e7d4c49/server.jar",
+    "Minecraft_server_1.20.2": "https://piston-data.mojang.com/v1/objects/5b868151bd02b41319f54c8d4061b8cae84e665c/server.jar",
+    "Minecraft_server_1.20.1": "https://piston-data.mojang.com/v1/objects/0b4dba049482496c507b2387a73a913230ebbd76/server.txt",
+    "Minecraft_server_1.20": "https://piston-data.mojang.com/v1/objects/15c777e2cfe0556eef19aab534b186c0c6f277e1/server.jar",
     "Minecraft_server_1.19.4": "xxx",
     "Minecraft_server_1.19.3": "xxx",
     "Minecraft_server_1.19.2": "xxx",
@@ -384,6 +400,14 @@ download_urls = {
     "java-lite-v3": java_lite_v3_url
 }
 
+# 必备文件的下载链接
+essential_files_urls = {
+    "eula": "https://gitee.com/a-clear-water/cs/releases/download/run/eula.txt",
+    "run.bat": "https://gitee.com/a-clear-water/cs/releases/download/run/run.bat",
+    "run.sh": "https://gitee.com/a-clear-water/cs/releases/download/run/run.sh"
+    # ... 其他必备文件 ...
+}
+
 
 # 检查并创建服务器目录
 def get_server_directory():
@@ -469,19 +493,34 @@ def make_download_and_extract_function(url):
 download_functions = {version: make_download_and_extract_function(url) for version, url in download_urls.items()}
 
 
-def download_files(download_directory, versions):
+def download_files(download_directory, versions, essential_files):
+    # 下载版本文件
     for version in versions:
         if version in download_functions:
             download_functions[version](download_directory)
         else:
             print(f"Version {version} not found in download functions.")
 
+    # 下载必备文件
+    for essential_file in essential_files:
+        if essential_file in download_functions:
+            download_functions[essential_file](download_directory)
+        else:
+            print(f"Essential file {essential_file} not found in download functions.")
+
+    exit_program()
+
+
+essential_download_functions = {name: make_download_and_extract_function(url) for name, url in
+                                essential_files_urls.items()}
+download_functions.update(essential_download_functions)
+
 
 # 函数生成器，用于创建 item_functions1 中的选项函数
 def create_option_function(versions):
     def option_function():
         download_directory = prompt_for_download_directory()
-        download_files(download_directory, versions)
+        download_files(download_directory, versions, essential_files_urls.keys())
         exit_program()
 
     return option_function
@@ -489,24 +528,7 @@ def create_option_function(versions):
 
 def download_version_files(version, files_list):
     download_directory = prompt_for_download_directory()
-    download_files(download_directory, files_list)
-    exit_program()
-
-
-def clear_screen():
-    if os.name == 'posix':
-        os.system('clear')
-    elif os.name == 'nt':
-        os.system('cls')
-    else:
-        print("无法清屏：不支持的操作系统")
-
-
-def exit_program():
-    clear_screen()
-    print("已完成")
-    input("按下任意键继续...")
-    exit()
+    download_files(download_directory, files_list, essential_files_urls.keys())
 
 
 version_files_mapping = {
