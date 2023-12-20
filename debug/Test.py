@@ -83,7 +83,7 @@ java_lite_v2_url = get_java_lite_url(os_name, arch_key, "v2")
 java_lite_v3_url = get_java_lite_url(os_name, arch_key, "v3")
 
 download_urls = {
-    "Minecraft_server_1.20.4": "xxx",
+    "Minecraft_server_1.20.4": "https://piston-data.mojang.com/v1/objects/8dd1a28015f51b1803213892b50b7b4fc76e594d/server.jar",
     "Minecraft_server_1.20.3": "xxx",
     "Minecraft_server_1.20.2": "xxx",
     "Minecraft_server_1.20.1": "xxx",
@@ -379,11 +379,18 @@ download_urls = {
     "Waterfall_server_1.13": "xxx",
     "Waterfall_server_1.12": "xxx",
     "Waterfall_server_1.11": "xxx",
+    "eula": "xxx",
+    "run.sh": "xxx",
+    "run.bat": "xxx",
     "java-lite-v1": java_lite_v1_url,
     "java-lite-v2": java_lite_v2_url,
     "java-lite-v3": java_lite_v3_url
 }
-
+Necessary = {
+    "eula",
+    "run.sh",
+    "run.bat",
+}
 
 
 # 检查并创建服务器目录
@@ -443,7 +450,7 @@ def make_download_and_extract_function(url):
                     tar_ref.extractall(download_directory)
                 print(f"Extracted: {destination}")
 
-            # 删除原始的压缩文件
+            # 删除原始压缩文件
             os.remove(destination)
             print(f"Deleted compressed file: {destination}")
 
@@ -511,7 +518,7 @@ def exit_program():
 
 version_files_mapping = {
     "Minecraft_server": {
-        "1.20.4": ["Minecraft_server_1.20.4", "java-lite-v1"],
+        "1.20.4": ["Minecraft_server_1.20.4", "java-lite-v1", Necessary],
         "1.20.3": ["Minecraft_server_1.20.3", "java-lite-v1"],
         "1.20.2": ["Minecraft_server_1.20.2", "java-lite-v1"],
         "1.20.1": ["Minecraft_server_1.20.1", "java-lite-v1"],
