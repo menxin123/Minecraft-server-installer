@@ -379,17 +379,9 @@ download_urls = {
     "Waterfall_server_1.13": "xxx",
     "Waterfall_server_1.12": "xxx",
     "Waterfall_server_1.11": "xxx",
-    "eula": "xxx",
-    "run.sh": "xxx",
-    "run.bat": "xxx",
     "java-lite-v1": java_lite_v1_url,
     "java-lite-v2": java_lite_v2_url,
     "java-lite-v3": java_lite_v3_url
-}
-Necessary = {
-    "eula",
-    "run.sh",
-    "run.bat",
 }
 
 
@@ -436,38 +428,39 @@ def make_download_and_extract_function(url):
                 for chunk in response.iter_content(chunk_size=1024):
                     bar.update(len(chunk))
                     file.write(chunk)
-            print(f"Downloaded: {destination}")
+            print(f"已下载: {destination}")
 
             # 如果文件是ZIP格式，解压它
             if destination.endswith('.zip'):
                 with zipfile.ZipFile(destination, 'r') as zip_ref:
                     zip_ref.extractall(download_directory)
-                print(f"Extracted: {destination}")
+                print(f"已解压: {destination}")
 
             # 如果文件是TAR.GZ格式，解压它
             elif destination.endswith('.tar.gz'):
                 with tarfile.open(destination, 'r:gz') as tar_ref:
                     tar_ref.extractall(download_directory)
-                print(f"Extracted: {destination}")
+                print(f"已解压: {destination}")
 
             # 删除原始压缩文件
-            os.remove(destination)
-            print(f"Deleted compressed file: {destination}")
+            if destination.endswith('.zip') or destination.endswith('.tar.gz'):
+                os.remove(destination)
+                print(f"已删除压缩文件: {destination}")
 
             # 查找解压后的文件夹并重命名为 'java'
             extracted_folders = [f.name for f in os.scandir(download_directory) if f.is_dir()]
             for folder_name in extracted_folders:
-                if folder_name.startswith("jdk") or folder_name.startswith("bellsoft-jdk"):
+                if folder_name.startswith("jdk"):
                     folder_path = os.path.join(download_directory, folder_name)
                     java_path = os.path.join(download_directory, 'java')
                     if os.path.exists(java_path):
                         shutil.rmtree(java_path)
                     shutil.move(folder_path, java_path)
-                    print(f"Renamed '{folder_name}' to 'java'")
+                    print(f"已重命名 '{folder_name}' 为 'java'")
                     break
 
         else:
-            print(f"Failed to download: {url}")
+            print(f"下载失败: {url}")
 
     return download_and_extract
 
@@ -518,7 +511,7 @@ def exit_program():
 
 version_files_mapping = {
     "Minecraft_server": {
-        "1.20.4": ["Minecraft_server_1.20.4", "java-lite-v1", Necessary],
+        "1.20.4": ["Minecraft_server_1.20.4", "java-lite-v1"],
         "1.20.3": ["Minecraft_server_1.20.3", "java-lite-v1"],
         "1.20.2": ["Minecraft_server_1.20.2", "java-lite-v1"],
         "1.20.1": ["Minecraft_server_1.20.1", "java-lite-v1"],
