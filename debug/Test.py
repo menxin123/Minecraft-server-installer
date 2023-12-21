@@ -186,7 +186,7 @@ download_urls = {
     "Minecraft_server_1.0.1": "https://files.betacraft.uk/server-archive/release/1.0/1.0.1.jar",
     "Minecraft_server_1.0.0": "https://files.betacraft.uk/server-archive/release/1.0/1.0.0.jar",
     # forge部分
-    "Forge_server_1.20.4": "xxx",
+    "Forge_server_1.20.4": "https://github.moeyy.cn/https://github.com/menxin123/Minecraft-server-installer/releases/download/forge/1.20.4.zip",
     "Forge_server_1.20.3": "xxx",
     "Forge_server_1.20.2": "xxx",
     "Forge_server_1.20.1": "xxx",
