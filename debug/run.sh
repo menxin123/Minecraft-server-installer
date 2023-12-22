@@ -4,12 +4,17 @@
 JVM_ARGS="-Xmx1024m -Xms512m"
 PROGRAM_ARGS="-nogui"
 
-# 检测当前目录下的第一个.jar文件
-JAR_FILE=""
-for f in *.jar; do
-  JAR_FILE="$f"
-  break
-done
+# 检测当前目录下带有forge字样的第一个.jar文件
+FORGE_JAR_FILE=$(find . -maxdepth 1 -name '*forge*.jar' | head -n 1)
+FORGE_JAR_FILE=${FORGE_JAR_FILE:2}
+
+# 如果没有找到带forge字样的.jar文件，则检测当前目录下的第一个.jar文件
+if [ -z "$FORGE_JAR_FILE" ]; then
+  JAR_FILE=$(find . -maxdepth 1 -name '*.jar' | head -n 1)
+  JAR_FILE=${JAR_FILE:2}
+else
+  JAR_FILE="$FORGE_JAR_FILE"
+fi
 
 # 运行.jar文件
 if [ -n "$JAR_FILE" ]; then
