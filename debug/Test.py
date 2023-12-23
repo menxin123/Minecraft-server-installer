@@ -20,7 +20,6 @@ def statement():
     input("按下任意键继续...")
     os.system('cls')
 
-
 def Basic_tutorials():
     print("服务器基础教程")
     print("1. 本教程提供打包服务器,自带Java环境,启动器请自行配置选择。")
