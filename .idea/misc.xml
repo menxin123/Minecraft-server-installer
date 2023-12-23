@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Black">
-    <option name="sdkName" value="Python 3.11 (Minecraft servers One-Click Installation Script (Command Line Version))" />
+    <option name="sdkName" value="D:\python3.11.6\python.exe" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (Minecraft servers One-Click Installation Script (Command Line Version))" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (Minecraft servers One-Click Installation Script (Command Line Version)) (2)" project-jdk-type="Python SDK" />
   <component name="PyPackaging">
     <option name="earlyReleasesAsUpgrades" value="true" />
   </component>

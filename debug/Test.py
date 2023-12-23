@@ -6,6 +6,20 @@ from tqdm import tqdm
 import zipfile
 import tarfile
 
+def clear_screen():
+    if os.name == 'posix':
+        os.system('clear')
+    elif os.name == 'nt':
+        os.system('cls')
+    else:
+        print("无法清屏：不支持的操作系统")
+
+
+def exit_program():
+    clear_screen()
+    print("已完成")
+    input("按下任意键继续...")
+    exit()
 
 def statement():
     print("免责声明：")
@@ -18,7 +32,7 @@ def statement():
     print("8. eula详细内容请访问https://www.minecraft.net/zh-hans/eula")
     print("6. 反馈邮箱: dyx45d@163.com 作者QQ: 3636695284")
     input("按下任意键继续...")
-    os.system('cls')
+    clear_screen()
 
 
 def Basic_tutorials():
@@ -39,6 +53,7 @@ def Basic_tutorials():
     print("14. server文件编辑教程下载https://github.com/menxin123/Minecraft-server-one-click-install-script/releases/download"
           "/Advanced_server_editing_tutorial/server.docx")
     input("按下任意键继续...")
+    clear_screen()
 
 
 def get_os_arch():
@@ -47,20 +62,7 @@ def get_os_arch():
     return os_name, arch
 
 
-def clear_screen():
-    if os.name == 'posix':
-        os.system('clear')
-    elif os.name == 'nt':
-        os.system('cls')
-    else:
-        print("无法清屏：不支持的操作系统")
 
-
-def exit_program():
-    clear_screen()
-    print("已完成")
-    input("按下任意键继续...")
-    exit()
 
 
 java_versions = {

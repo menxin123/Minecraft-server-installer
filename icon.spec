@@ -34,5 +34,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['Minecraft_server_installer'],
+    icon=['Minecraft_server_installer（0.2.1）.py'],
 )
