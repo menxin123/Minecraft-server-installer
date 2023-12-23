@@ -5,7 +5,7 @@ import urllib.request
 import fnmatch
 import requests
 
-def 声明():
+def statement():
     print("免责声明：")
     print("1. 本脚本一切均来自官方源转载，非商用")
     print("2. 本脚本只负责基础包装服务器，服务器除特殊版本均可正常使用。添加模组后无法运行不归本脚本负责")

@@ -7,6 +7,40 @@ import zipfile
 import tarfile
 
 
+def statement():
+    print("免责声明：")
+    print("1. 本脚本一切均来自官方源转载，非商用")
+    print("2. 本脚本只负责基础包装服务器，服务器除特殊版本均可正常使用。添加模组后无法运行不归本脚本负责")
+    print("3. 本脚本为公益脚本，严禁倒卖商业")
+    print("4. 无论服务器做和用途，本人概不负责")
+    print("5. 本脚本仅由个人开发，请自行甄别作者")
+    print("7. 使用本脚本后默认自动同意我的世界eula")
+    print("8. eula详细内容请访问https://www.minecraft.net/zh-hans/eula")
+    print("6. 反馈邮箱: dyx45d@163.com 作者QQ: 3636695284")
+    input("按下任意键继续...")
+    os.system('cls')
+
+
+def Basic_tutorials():
+    print("服务器基础教程")
+    print("1. 本教程提供打包服务器,自带Java环境,启动器请自行配置选择。")
+    print("2. 本服务器默认关闭正版验证，无需担心账号认证问题。")
+    print("3. 双击run.bat即可快速启动服务器,方便简洁。")
+    print("4. 如果服务器在本地运行,默认IP为127.0.0.1,端口为25565。")
+    print("5. 将模组放置在服务器根目录的mods文件夹中,确保正确加载所需的模组。")
+    print("6. 将插件放置在服务器根目录的plugins文件夹中,保证插件正常运行。")
+    print("7. 内网穿透的配置示例（以本地部署，未进行修改为例）：")
+    print("8. 内网穿透IP输入127.0.0.1,表示将本地IP映射为公网IP。")
+    print("9. 内部端口输入25565,表示映射的是Minecraft服务器的端口。")
+    print("10. 外部IP和端口可任意选择,根据需要进行设置。")
+    print("11. 连接服务器时，可以使用 外部IP:外部端口 进行连接。（例如 xxx.xxx.xxx.xxx:外部端口，冒号一定要加）")
+    print("12. 如果在使用过程中遇到任何问题，请联系反馈给作者,QQ:3636695284,邮箱,dyx45d@163.com。")
+    print("13. 如果下载文件时遇到闪退情况，请考虑检查网络连接是否正常，可能是网络问题而非脚本本身的问题。")
+    print("14. server文件编辑教程下载https://github.com/menxin123/Minecraft-server-one-click-install-script/releases/download"
+          "/Advanced_server_editing_tutorial/server.docx")
+    input("按下任意键继续...")
+
+
 def get_os_arch():
     os_name = platform.system().lower()
     arch, _ = platform.architecture()
@@ -549,7 +583,7 @@ def make_download_and_extract_function(url):
 download_functions = {version: make_download_and_extract_function(url) for version, url in download_urls.items()}
 
 
-def download_files(download_directory, versions, essential_files):
+def download_files(download_directory, versions, download_essentials=True):
     # 下载版本文件
     for version in versions:
         if version in download_functions:
@@ -557,13 +591,15 @@ def download_files(download_directory, versions, essential_files):
         else:
             print(f"Version {version} not found in download functions.")
 
-    # 下载必备文件
-    for essential_file in essential_files:
-        if essential_file in download_functions:
-            download_functions[essential_file](download_directory)
-        else:
-            print(f"Essential file {essential_file} not found in download functions.")
+    # 如果需要，下载必备文件
+    if download_essentials:
+        for essential_file in essential_files_urls.keys():
+            if essential_file in download_functions:
+                download_functions[essential_file](download_directory)
+            else:
+                print(f"Essential file {essential_file} not found in download functions.")
 
+    # 所有下载完成后退出程序
     exit_program()
 
 
@@ -576,15 +612,40 @@ download_functions.update(essential_download_functions)
 def create_option_function(versions):
     def option_function():
         download_directory = prompt_for_download_directory()
-        download_files(download_directory, versions, essential_files_urls.keys())
+
+        # 检查版本数据是否为列表（默认下载必备文件）或字典（可能包含 download_essentials 键）
+        if isinstance(versions, list):
+            files_list = versions
+            download_essentials = True
+        elif isinstance(versions, dict):
+            files_list = versions.get("files", [])
+            download_essentials = versions.get("download_essentials", True)
+        else:
+            print("Invalid version data format.")
+            return
+
+        download_files(download_directory, files_list, download_essentials)
         exit_program()
 
     return option_function
 
 
-def download_version_files(version, files_list):
+def download_version_files(version, version_data):
     download_directory = prompt_for_download_directory()
-    download_files(download_directory, files_list, essential_files_urls.keys())
+
+    # 初始化变量以避免引用前未赋值的警告
+    files_list = []
+    download_essentials = True
+
+    # 检查版本数据是否为列表（默认下载必备文件）或字典（可能包含 download_essentials 键）
+    if isinstance(version_data, list):
+        files_list = version_data
+    elif isinstance(version_data, dict):
+        files_list = version_data.get("files", [])
+        download_essentials = version_data.get("download_essentials", True)
+
+    # 调用 download_files 函数进行下载
+    download_files(download_directory, files_list, download_essentials)
 
 
 version_files_mapping = {
@@ -678,18 +739,54 @@ version_files_mapping = {
     "Forge_server": {
         "1.20.4": ["Forge_server_1.20.4", "java-lite-v1"],
         "1.20.3": ["Forge_server_1.20.3", "java-lite-v1"],
-        "1.20.2": ["Forge_server_1.20.2", "java-lite-v1"],
-        "1.20.1": ["Forge_server_1.20.1", "java-lite-v1"],
-        "1.20": ["Forge_server_1.20", "java-lite-v1"],
-        "1.19.4": ["Forge_server_1.19.4", "java-lite-v1"],
-        "1.19.3": ["Forge_server_1.19.3", "java-lite-v1"],
-        "1.19.2": ["Forge_server_1.19.2", "java-lite-v1"],
-        "1.19.1": ["Forge_server_1.19.1", "java-lite-v1"],
-        "1.19": ["Forge_server_1.19", "java-lite-v1"],
-        "1.18.2": ["Forge_server_1.18.2", "java-lite-v1"],
-        "1.18.1": ["Forge_server_1.18.1", "java-lite-v1"],
-        "1.18": ["Forge_server_1.18", "java-lite-v1"],
-        "1.17.1": ["Forge_server_1.17.1", "java-lite-v2"],
+        "1.20.2": {
+            "files": ["Forge_server_1.20.2", "java-lite-v1"],
+            "download_essentials": False
+        },
+        "1.20.1": {
+            "files": ["Forge_server_1.20.1", "java-lite-v1"],
+            "download_essentials": False
+        },
+        "1.20": {
+            "files": ["Forge_server_1.20", "java-lite-v1"],
+            "download_essentials": False
+        },
+        "1.19.4": {
+            "files": ["Forge_server_1.19.4", "java-lite-v1"],
+            "download_essentials": False
+        },
+        "1.19.3": {
+            "files": ["Forge_server_1.19.3", "java-lite-v1"],
+            "download_essentials": False
+        },
+        "1.19.2": {
+            "files": ["Forge_server_1.19.2", "java-lite-v1"],
+            "download_essentials": False
+        },
+        "1.19.1": {
+            "files": ["Forge_server_1.19.1", "java-lite-v1"],
+            "download_essentials": False
+        },
+        "1.19": {
+            "files": ["Forge_server_1.19", "java-lite-v1"],
+            "download_essentials": False
+        },
+        "1.18.2": {
+            "files": ["Forge_server_1.18.2", "java-lite-v1"],
+            "download_essentials": False
+        },
+        "1.18.1": {
+            "files": ["Forge_server_1.18.1", "java-lite-v1"],
+            "download_essentials": False
+        },
+        "1.18": {
+            "files": ["Forge_server_1.18", "java-lite-v1"],
+            "download_essentials": False
+        },
+        "1.17.1": {
+            "files": ["Forge_server_1.17.1", "java-lite-v2"],
+            "download_essentials": False
+        },
         "1.16.5": ["Forge_server_1.16.5", "java-lite-v3"],
         "1.16.4": ["Forge_server_1.16.4", "java-lite-v3"],
         "1.16.3": ["Forge_server_1.16.3", "java-lite-v3"],
@@ -944,11 +1041,12 @@ def execute_option_logic(content_tuple):
                 # 确保用户选择的是当前页面上的选项
                 if start_index <= selected_item_index < end_index:
                     selected_version = content_list[selected_item_index]
-                    if selected_version in version_files_mapping[title]:
-                        files_list = version_files_mapping[title][selected_version]
-                        download_version_files(selected_version, files_list)
-                    else:
-                        print("\n该选项没有对应的下载信息。")
+                    version_info = version_files_mapping[title].get(selected_version)
+                    # 如果版本信息不是字典，则创建一个包含文件列表的字典
+                    if not isinstance(version_info, dict):
+                        version_info = {"files": version_info}
+                    # 调用下载函数，传入版本和版本信息
+                    download_version_files(selected_version, version_info)
                 else:
                     print("\n选择的编号不在当前页面，请重新输入。")
             except (ValueError, IndexError):
@@ -972,6 +1070,7 @@ def main_menu():
         "10": "Waterfall_server",
         # ... 其他服务器类型 ...
     }
+
     while True:
         user_input = input("---------主菜单---------\n1. Minecraft server\n2. Forge server\n3. Fabric_server\n4. "
                            "Cat_server\n5. Mohist_server\n6. Banner_server\n7. Craftbukkit_server\n8. "
@@ -988,6 +1087,9 @@ def main_menu():
             print("无效的选择，请重新输入。")
 
 
+statement()
+Basic_tutorials()
+clear_screen()
 # 调用主菜单函数
 if __name__ == "__main__":
     main_menu()
