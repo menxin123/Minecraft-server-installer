@@ -32,7 +32,7 @@ def statement():
     print("5. 本脚本仅由个人开发，请自行甄别作者")
     print("7. 使用本脚本后默认自动同意我的世界eula")
     print("8. eula详细内容请访问https://www.minecraft.net/zh-hans/eula")
-    print("6. 反馈邮箱: dyx45d@163.com 作者QQ: 3636695284")
+    print("6. 反馈邮箱: dyx45d@163.com 作者QQ: 3636695284啊")
     input("按下任意键继续...")
     clear_screen()
 
