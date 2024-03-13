@@ -1,11 +1,12 @@
-import os
 import platform
-import shutil
+import os
 import requests
 from tqdm import tqdm
 import zipfile
 import tarfile
-
+import shutil
+from urllib.parse import unquote
+import re
 
 def clear_screen():
     if os.name == 'posix':
@@ -520,19 +521,23 @@ def prompt_for_download_directory():
 
 # 创建下载函数
 # 根据URL获取文件名
-def get_filename_from_url(url):
+def get_filename_from_cd_or_url(response, url):
+    cd = response.headers.get('content-disposition')
+    if cd:
+        fname = re.findall('filename="(.+)"', cd)
+        if len(fname) == 1:
+            return unquote(fname[0])
     return url.split('/')[-1]
 
 
 # 创建下载并解压函数
 def make_download_and_extract_function(url):
     def download_and_extract(download_directory):
-        filename = get_filename_from_url(url)
-        destination = os.path.join(download_directory, filename)
-
-        # 下载文件
         response = requests.get(url, stream=True)
         if response.status_code == 200:
+            filename = get_filename_from_cd_or_url(response, url)
+            destination = os.path.join(download_directory, filename)
+
             with open(destination, 'wb') as file, tqdm(
                     desc=filename,
                     total=int(response.headers.get('content-length', 0)),
@@ -544,6 +549,7 @@ def make_download_and_extract_function(url):
                     bar.update(len(chunk))
                     file.write(chunk)
             print(f"已下载: {destination}")
+
 
             # 如果文件是ZIP格式，解压它
             if destination.endswith('.zip'):
@@ -629,6 +635,7 @@ def create_option_function(versions):
         exit_program()
 
     return option_function
+
 
 
 def download_version_files(version, version_data):
