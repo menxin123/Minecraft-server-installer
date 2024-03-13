@@ -497,7 +497,6 @@ essential_files_urls = {
     "eula": "https://gitee.com/a-clear-water/cs/releases/download/run/eula.txt",
     "run.bat": "https://gitee.com/a-clear-water/cs/releases/download/run/run.bat",
     "run.sh": "https://gitee.com/a-clear-water/cs/releases/download/run/run.sh"
-    # ... 其他必备文件 ...
 }
 
 
@@ -516,7 +515,11 @@ def get_server_directory():
 # 提示用户输入下载目录
 def prompt_for_download_directory():
     user_input_directory = input("请输入下载目录（留空则使用默认目录）: ").strip()
+    if user_input_directory and not os.path.exists(user_input_directory):
+        print("您输入的目录不存在，请重新输入。")
+        return prompt_for_download_directory()
     return user_input_directory if user_input_directory else get_server_directory()
+
 
 
 # 创建下载函数
@@ -533,55 +536,59 @@ def get_filename_from_cd_or_url(response, url):
 # 创建下载并解压函数
 def make_download_and_extract_function(url):
     def download_and_extract(download_directory):
-        response = requests.get(url, stream=True)
-        if response.status_code == 200:
-            filename = get_filename_from_cd_or_url(response, url)
-            destination = os.path.join(download_directory, filename)
+        try:
+            response = requests.get(url, stream=True)
+            if response.status_code == 200:
+                filename = get_filename_from_cd_or_url(response, url)
+                destination = os.path.join(download_directory, filename)
 
-            with open(destination, 'wb') as file, tqdm(
-                    desc=filename,
-                    total=int(response.headers.get('content-length', 0)),
-                    unit='iB',
-                    unit_scale=True,
-                    unit_divisor=1024,
-            ) as bar:
-                for chunk in response.iter_content(chunk_size=1024):
-                    bar.update(len(chunk))
-                    file.write(chunk)
-            print(f"已下载: {destination}")
+                with open(destination, 'wb') as file, tqdm(
+                        desc=filename,
+                        total=int(response.headers.get('content-length', 0)),
+                        unit='iB',
+                        unit_scale=True,
+                        unit_divisor=1024,
+                ) as bar:
+                    for chunk in response.iter_content(chunk_size=1024):
+                        bar.update(len(chunk))
+                        file.write(chunk)
+                print(f"已下载: {destination}")
 
+                if destination.endswith('.zip'):
+                    with zipfile.ZipFile(destination, 'r') as zip_ref:
+                        zip_ref.extractall(download_directory)
+                    print(f"已解压: {destination}")
+                elif destination.endswith('.tar.gz'):
+                    with tarfile.open(destination, 'r:gz') as tar_ref:
+                        tar_ref.extractall(download_directory)
+                    print(f"已解压: {destination}")
 
-            # 如果文件是ZIP格式，解压它
-            if destination.endswith('.zip'):
-                with zipfile.ZipFile(destination, 'r') as zip_ref:
-                    zip_ref.extractall(download_directory)
-                print(f"已解压: {destination}")
+                if destination.endswith('.zip') or destination.endswith('.tar.gz'):
+                    os.remove(destination)
+                    print(f"已删除压缩文件: {destination}")
 
-            # 如果文件是TAR.GZ格式，解压它
-            elif destination.endswith('.tar.gz'):
-                with tarfile.open(destination, 'r:gz') as tar_ref:
-                    tar_ref.extractall(download_directory)
-                print(f"已解压: {destination}")
-
-            # 删除原始压缩文件
-            if destination.endswith('.zip') or destination.endswith('.tar.gz'):
-                os.remove(destination)
-                print(f"已删除压缩文件: {destination}")
-
-            # 查找解压后的文件夹并重命名为 'java'
-            extracted_folders = [f.name for f in os.scandir(download_directory) if f.is_dir()]
-            for folder_name in extracted_folders:
-                if folder_name.startswith("jdk"):
-                    folder_path = os.path.join(download_directory, folder_name)
-                    java_path = os.path.join(download_directory, 'java')
-                    if os.path.exists(java_path):
-                        shutil.rmtree(java_path)
-                    shutil.move(folder_path, java_path)
-                    print(f"已重命名 '{folder_name}' 为 'java'")
-                    break
-
-        else:
-            print(f"下载失败: {url}")
+                extracted_folders = [f.name for f in os.scandir(download_directory) if f.is_dir()]
+                for folder_name in extracted_folders:
+                    if folder_name.startswith("jdk"):
+                        folder_path = os.path.join(download_directory, folder_name)
+                        java_path = os.path.join(download_directory, 'java')
+                        if os.path.exists(java_path):
+                            shutil.rmtree(java_path)
+                        shutil.move(folder_path, java_path)
+                        print(f"已重命名 '{folder_name}' 为 'java'")
+                        break
+            else:
+                print(f"下载失败: {url}")
+                shutil.rmtree(download_directory)
+                print(f"已删除下载目录: {download_directory}")
+        except requests.exceptions.RequestException as e:
+            clear_screen()
+            shutil.rmtree(download_directory)
+            print(f"已删除下载目录: {download_directory}")
+            print("下载失败，可能是网络问题，请重试。")
+            input("按下任意键继续...")
+            clear_screen()
+            return main_menu()
 
     return download_and_extract
 
@@ -1092,6 +1099,7 @@ def main_menu():
         elif user_input == 'q':
             exit()
         else:
+            clear_screen()
             print("无效的选择，请重新输入。")
 
 
