@@ -33,9 +33,10 @@ def statement():
     print("3. 本脚本为公益脚本，严禁倒卖商业")
     print("4. 无论服务器做和用途，本人概不负责")
     print("5. 本脚本仅由个人开发，请自行甄别作者")
+    print("6. 使用时输入对应的数字编号即可操作")
     print("7. 使用本脚本后默认自动同意我的世界eula")
     print("8. eula详细内容请访问https://www.minecraft.net/zh-hans/eula")
-    print("6. 反馈邮箱: dyx45d@163.com")
+    print("9. 反馈邮箱: dyx45d@163.com")
     input("按下任意键继续...")
     clear_screen()
 
@@ -1112,6 +1113,7 @@ def main_menu():
 statement()
 Basic_tutorials()
 clear_screen()
+
 # 调用主菜单函数
 if __name__ == "__main__":
     main_menu()
