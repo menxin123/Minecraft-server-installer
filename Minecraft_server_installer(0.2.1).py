@@ -35,7 +35,7 @@ def statement():
     print("5. 本脚本仅由个人开发，请自行甄别作者")
     print("7. 使用本脚本后默认自动同意我的世界eula")
     print("8. eula详细内容请访问https://www.minecraft.net/zh-hans/eula")
-    print("6. 反馈邮箱: dyx45d@163.com 作者QQ: 3636695284")
+    print("6. 反馈邮箱: dyx45d@163.com")
     input("按下任意键继续...")
     clear_screen()
 
@@ -53,7 +53,7 @@ def Basic_tutorials():
     print("9. 内部端口输入25565,表示映射的是Minecraft服务器的端口。")
     print("10. 外部IP和端口可任意选择,根据需要进行设置。")
     print("11. 连接服务器时，可以使用 外部IP:外部端口 进行连接。（例如 xxx.xxx.xxx.xxx:外部端口，冒号一定要加）")
-    print("12. 如果在使用过程中遇到任何问题，请联系反馈给作者,QQ:3636695284,邮箱,dyx45d@163.com。")
+    print("12. 如果在使用过程中遇到任何问题，请联系反馈给作者 邮箱,dyx45d@163.com。")
     print("13. 如果下载文件时遇到闪退情况，请考虑检查网络连接是否正常，可能是网络问题而非脚本本身的问题。")
     print("14. server文件编辑教程下载https://github.com/menxin123/Minecraft-server-one-click-install-script/releases/download"
           "/Advanced_server_editing_tutorial/server.docx")
