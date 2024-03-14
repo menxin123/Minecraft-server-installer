@@ -500,13 +500,16 @@ essential_files_urls = {
 }
 
 
+def get_script_directory():
+    return os.path.dirname(os.path.realpath(__file__))
+
 # 检查并创建服务器目录
 def get_server_directory():
     base_name = "server"
-    base_dir = base_name
+    base_dir = os.path.join(get_script_directory(), base_name)
     counter = 1
     while os.path.exists(base_dir):
-        base_dir = f"{base_name}{counter}"
+        base_dir = os.path.join(get_script_directory(), f"{base_name}{counter}")
         counter += 1
     os.makedirs(base_dir)
     return base_dir
