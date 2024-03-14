@@ -7,6 +7,7 @@ import tarfile
 import shutil
 from urllib.parse import unquote
 import re
+import sys
 
 
 def clear_screen():
@@ -502,7 +503,10 @@ essential_files_urls = {
 
 
 def get_script_directory():
-    return os.path.dirname(os.path.realpath(__file__))
+    if getattr(sys, 'frozen', False):  # 判断是否为打包后的可执行文件
+        return os.path.dirname(sys.executable)
+    return os.path.dirname(os.path.abspath(sys.argv[0]))
+
 
 # 检查并创建服务器目录
 def get_server_directory():
@@ -523,7 +527,6 @@ def prompt_for_download_directory():
         print("您输入的目录不存在，请重新输入。")
         return prompt_for_download_directory()
     return user_input_directory if user_input_directory else get_server_directory()
-
 
 
 # 创建下载函数
@@ -646,7 +649,6 @@ def create_option_function(versions):
         exit_program()
 
     return option_function
-
 
 
 def download_version_files(version, version_data):
