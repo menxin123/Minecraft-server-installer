@@ -87,6 +87,10 @@ def get_os_arch():
         else:
             return os_name, "x64" if "64" in arch else "x86"  # 默认x86架构
 
+    # 对于其他系统，默认为x86架构
+    return os_name, "x86"
+
+
 
 
 
