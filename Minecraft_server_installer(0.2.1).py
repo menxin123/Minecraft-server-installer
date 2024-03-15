@@ -66,20 +66,32 @@ def get_os_arch():
     os_name = platform.system().lower()
     arch, _ = platform.architecture()
 
-    # 判断是否为aarch64架构
-    is_aarch64 = "aarch64" in arch.lower()
+    if os_name == "linux":
+        if "aarch64" in arch.lower():
+            return os_name, "arm"  # 将aarch64架构映射到ARM架构
 
-    if "arm" in arch.lower():
-        arch_key = "arm"  # ARM架构
-    elif "armv7l" in arch.lower() or "armhf" in arch.lower():
-        arch_key = "arm32"  # ARM 32位
-    else:
-        arch_key = "x64" if "64" in arch else "x86"  # 其他架构
+        if "arm" in arch.lower():
+            return os_name, "arm"  # ARM架构
+        elif "armv7l" in arch.lower() or "armhf" in arch.lower():
+            return os_name, "arm32"  # ARM 32位
 
-    if is_aarch64:
-        arch_key = "arm"  # 将aarch64架构映射到ARM架构
+    # 对于Windows系统，保持原有架构识别逻辑
+    if os_name == "windows":
+        if "arm" in arch.lower():
+            return os_name, "arm"
+        else:
+            return os_name, "x64" if "64" in arch else "x86"
 
-    return os_name, arch_key
+    # 对于Mac系统，保持原有架构识别逻辑
+    if os_name == "darwin":
+        if "arm" in arch.lower():
+            return os_name, "arm"
+        else:
+            return os_name, "x64" if "64" in arch else "x86"
+
+    # 其他系统默认为x86架构
+    return os_name, "x86"
+
 
 
 
