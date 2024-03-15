@@ -82,6 +82,7 @@ def get_os_arch():
     return os_name, arch_key
 
 
+
 java_versions = {
     "windows": {
         "x86": {
