@@ -68,29 +68,28 @@ def get_os_arch():
 
     if os_name == "linux":
         if "aarch64" in arch.lower():
-            return os_name, "arm"  # 将aarch64架构映射到ARM架构
+            return os_name, "aarch64"  # 返回aarch64架构
 
         if "arm" in arch.lower():
             return os_name, "arm"  # ARM架构
         elif "armv7l" in arch.lower() or "armhf" in arch.lower():
             return os_name, "arm32"  # ARM 32位
 
-    # 对于Windows系统，保持原有架构识别逻辑
     if os_name == "windows":
         if "arm" in arch.lower():
-            return os_name, "arm"
+            return os_name, "arm"  # ARM架构
         else:
-            return os_name, "x64" if "64" in arch else "x86"
+            return os_name, "x64" if "64" in arch else "x86"  # 默认x86架构
 
-    # 对于Mac系统，保持原有架构识别逻辑
     if os_name == "darwin":
         if "arm" in arch.lower():
-            return os_name, "arm"
+            return os_name, "arm"  # ARM架构
         else:
-            return os_name, "x64" if "64" in arch else "x86"
+            return os_name, "x64" if "64" in arch else "x86"  # 默认x86架构
 
-    # 其他系统默认为x86架构
+    # 对于其他系统，默认为x86架构
     return os_name, "x86"
+
 
 
 
@@ -129,6 +128,12 @@ java_versions = {
             "v2": "https://download.bell-sw.com/java/11.0.21+10/bellsoft-jdk11.0.21+10-linux-arm32-vfp-hflt-lite.tar.gz",
             "v3": "https://cdn.azul.com/zulu-embedded/bin/zulu8.74.0.17-ca-jdk8.0.392-linux_aarch32sf.tar.gz",
         },
+        "aarch64": {
+            "v1": "https://download.bell-sw.com/java/17.0.9+11/bellsoft-jdk17.0.9+11-linux-aarch64-lite.tar.gz",
+            "v2": "https://download.bell-sw.com/java/11.0.21+10/bellsoft-jdk11.0.21+10-linux-aarch64-full.tar.gz",
+            "v3": "https://download.bell-sw.com/java/8u392+9/bellsoft-jdk8u392+9-linux-aarch64-lite.tar.gz",
+        },
+
     },
     "darwin": {
         "x64": {
