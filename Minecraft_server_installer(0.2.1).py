@@ -23,7 +23,7 @@ def exit_program():
     clear_screen()
     print("已完成")
     input("按下任意键继续...")
-    exit()
+    sys.exit()
 
 
 def statement():
@@ -65,7 +65,21 @@ def Basic_tutorials():
 def get_os_arch():
     os_name = platform.system().lower()
     arch, _ = platform.architecture()
-    return os_name, arch
+
+    # 判断是否为aarch64架构
+    is_aarch64 = "aarch64" in arch.lower()
+
+    if "arm" in arch.lower():
+        arch_key = "arm"  # ARM架构
+    elif "armv7l" in arch.lower() or "armhf" in arch.lower():
+        arch_key = "arm32"  # ARM 32位
+    else:
+        arch_key = "x64" if "64" in arch else "x86"  # 其他架构
+
+    if is_aarch64:
+        arch_key = "arm"  # 将aarch64架构映射到ARM架构
+
+    return os_name, arch_key
 
 
 java_versions = {
@@ -125,13 +139,8 @@ def get_java_lite_url(os_name, arch_key, version_identifier):
     raise ValueError(f"No Java-Lite URL found for OS: {os_name}, Arch: {arch_key}, Version: {version_identifier}")
 
 
-os_name, arch = get_os_arch()
-if "arm" in arch.lower() or "aarch64" in arch.lower():
-    arch_key = "arm"
-elif "armv7l" in arch.lower() or "armhf" in arch.lower():
-    arch_key = "arm32"  # 使用新添加的键
-else:
-    arch_key = "x64" if "64" in arch else "x86"
+
+os_name, arch_key = get_os_arch()
 
 java_lite_v1_url = get_java_lite_url(os_name, arch_key, "v1")
 java_lite_v2_url = get_java_lite_url(os_name, arch_key, "v2")
