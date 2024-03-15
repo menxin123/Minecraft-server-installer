@@ -64,35 +64,8 @@ def Basic_tutorials():
 
 def get_os_arch():
     os_name = platform.system().lower()
-    arch, _ = platform.architecture()
-
-    if os_name == "linux":
-        if "aarch64" in arch.lower():
-            return os_name, "aarch64"  # 返回aarch64架构
-
-        if "arm" in arch.lower():
-            return os_name, "arm"  # ARM架构
-        elif "armv7l" in arch.lower() or "armhf" in arch.lower():
-            return os_name, "arm32"  # ARM 32位
-
-    if os_name == "windows":
-        if "arm" in arch.lower():
-            return os_name, "arm"  # ARM架构
-        else:
-            return os_name, "x64" if "64" in arch else "x86"  # 默认x86架构
-
-    if os_name == "darwin":
-        if "arm" in arch.lower():
-            return os_name, "arm"  # ARM架构
-        else:
-            return os_name, "x64" if "64" in arch else "x86"  # 默认x86架构
-
-    # 对于其他系统，默认为x86架构
-    return os_name, "x86"
-
-
-
-
+    arch = platform.machine().lower()
+    return os_name, arch
 
 
 java_versions = {
@@ -129,12 +102,6 @@ java_versions = {
             "v2": "https://download.bell-sw.com/java/11.0.21+10/bellsoft-jdk11.0.21+10-linux-arm32-vfp-hflt-lite.tar.gz",
             "v3": "https://cdn.azul.com/zulu-embedded/bin/zulu8.74.0.17-ca-jdk8.0.392-linux_aarch32sf.tar.gz",
         },
-        "aarch64": {
-            "v1": "https://download.bell-sw.com/java/17.0.9+11/bellsoft-jdk17.0.9+11-linux-aarch64-lite.tar.gz",
-            "v2": "https://download.bell-sw.com/java/11.0.21+10/bellsoft-jdk11.0.21+10-linux-aarch64-full.tar.gz",
-            "v3": "https://download.bell-sw.com/java/8u392+9/bellsoft-jdk8u392+9-linux-aarch64-lite.tar.gz",
-        },
-
     },
     "darwin": {
         "x64": {
@@ -158,8 +125,27 @@ def get_java_lite_url(os_name, arch_key, version_identifier):
     raise ValueError(f"No Java-Lite URL found for OS: {os_name}, Arch: {arch_key}, Version: {version_identifier}")
 
 
+os_name, arch = get_os_arch()
 
-os_name, arch_key = get_os_arch()
+
+if os_name == 'linux':
+    if 'aarch64' in arch:
+        arch_key = 'arm'
+    elif 'arm' in arch or 'armv7l' in arch or 'armhf' in arch:
+        arch_key = 'arm32'
+    elif 'x86_64' in arch or 'amd64' in arch:
+        arch_key = 'x64'
+    elif 'i386' in arch or 'i686' in arch or 'x86' in arch:
+        arch_key = 'x86'
+    else:
+        raise ValueError(f"Unsupported architecture: {arch}")
+elif os_name == 'windows':
+    arch_key = 'x64' if '64' in arch else 'x86'
+elif os_name == 'darwin':
+    arch_key = 'arm' if 'arm' in arch else 'x64'
+else:
+    raise ValueError(f"Unsupported OS: {os_name}")
+
 
 java_lite_v1_url = get_java_lite_url(os_name, arch_key, "v1")
 java_lite_v2_url = get_java_lite_url(os_name, arch_key, "v2")
