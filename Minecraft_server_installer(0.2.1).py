@@ -1,7 +1,8 @@
 import platform
 import os
 import requests
-from tqdm import tqdm
+from rich.progress import Progress, BarColumn, DownloadColumn, TransferSpeedColumn, TimeRemainingColumn
+from rich.console import Console
 import zipfile
 import tarfile
 import shutil
@@ -572,7 +573,10 @@ def get_filename_from_cd_or_url(response, url):
 
 
 # 创建下载并解压函数
+
 def make_download_and_extract_function(url):
+    console = Console()
+
     def download_and_extract(download_directory):
         try:
             response = requests.get(url, stream=True)
@@ -580,30 +584,41 @@ def make_download_and_extract_function(url):
                 filename = get_filename_from_cd_or_url(response, url)
                 destination = os.path.join(download_directory, filename)
 
-                with open(destination, 'wb') as file, tqdm(
-                        desc=filename,
-                        total=int(response.headers.get('content-length', 0)),
-                        unit='iB',
-                        unit_scale=True,
-                        unit_divisor=1024,
-                ) as bar:
+                progress = Progress(
+                    BarColumn(bar_width=None, complete_style="cyan", finished_style="cyan"),
+                    "[bold magenta]" + filename + "[/]",
+                    "[progress.percentage]{task.percentage:>3.0f}%",
+                    "•",
+                    DownloadColumn(),
+                    "•",
+                    TransferSpeedColumn(),
+                    "•",
+                    TimeRemainingColumn(),
+                    transient=True,
+                )
+                task_id = progress.add_task("", total=int(response.headers.get('content-length', 0)))
+
+                with open(destination, 'wb') as file:
+                    progress.start()
                     for chunk in response.iter_content(chunk_size=1024):
-                        bar.update(len(chunk))
                         file.write(chunk)
-                print(f"已下载: {destination}")
+                        progress.update(task_id, advance=len(chunk))
+                progress.stop()
+
+                console.print(f"[cyan]已下载: {destination}[/cyan]")
 
                 if destination.endswith('.zip'):
                     with zipfile.ZipFile(destination, 'r') as zip_ref:
                         zip_ref.extractall(download_directory)
-                    print(f"已解压: {destination}")
+                    console.print(f"[cyan]已解压: {destination}[/cyan]")
                 elif destination.endswith('.tar.gz'):
                     with tarfile.open(destination, 'r:gz') as tar_ref:
                         tar_ref.extractall(download_directory)
-                    print(f"已解压: {destination}")
+                    console.print(f"[cyan]已解压: {destination}[/cyan]")
 
                 if destination.endswith('.zip') or destination.endswith('.tar.gz'):
                     os.remove(destination)
-                    print(f"已删除压缩文件: {destination}")
+                    console.print(f"[cyan]已删除压缩文件: {destination}[/cyan]")
 
                 extracted_folders = [f.name for f in os.scandir(download_directory) if f.is_dir()]
                 for folder_name in extracted_folders:
@@ -613,23 +628,20 @@ def make_download_and_extract_function(url):
                         if os.path.exists(java_path):
                             shutil.rmtree(java_path)
                         shutil.move(folder_path, java_path)
-                        print(f"已重命名 '{folder_name}' 为 'java'")
+                        console.print(f"[cyan]已重命名 '{folder_name}' 为 'java'[/cyan]")
                         break
             else:
-                print(f"下载失败: {url}")
+                console.print(f"[red]下载失败: {url}[/red]")
                 shutil.rmtree(download_directory)
-                print(f"已删除下载目录: {download_directory}")
+                console.print(f"[red]已删除下载目录: {download_directory}[/red]")
         except requests.exceptions.RequestException as e:
-            clear_screen()
             shutil.rmtree(download_directory)
-            print(f"已删除下载目录: {download_directory}")
-            print("下载失败，可能是网络问题，请重试。")
+            console.print(f"[red]已删除下载目录: {download_directory}[/red]")
+            console.print("[red]下载失败，可能是网络问题，请重试。[/red]")
             input("按下任意键继续...")
-            clear_screen()
             return main_menu()
 
     return download_and_extract
-
 
 # 创建下载函数的字典
 download_functions = {version: make_download_and_extract_function(url) for version, url in download_urls.items()}
