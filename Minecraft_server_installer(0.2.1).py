@@ -74,11 +74,13 @@ java_versions = {
             "v1": "https://download.bell-sw.com/java/17.0.9+11/bellsoft-jdk17.0.9+11-windows-i586-lite.zip",
             "v2": "https://download.bell-sw.com/java/11.0.21+10/bellsoft-jdk11.0.21+10-windows-i586-lite.zip",
             "v3": "https://download.bell-sw.com/java/8u392+9/bellsoft-jdk8u392+9-windows-i586-lite.zip",
+            "v4": "https://download.bell-sw.com/java/21.0.3+10/bellsoft-jdk21.0.3+10-windows-i586-lite.zip",
         },
         "x64": {
             "v1": "https://download.bell-sw.com/java/17.0.9+11/bellsoft-jdk17.0.9+11-windows-amd64-lite.zip",
             "v2": "https://download.bell-sw.com/java/11.0.21+10/bellsoft-jdk11.0.21+10-windows-amd64-lite.zip",
             "v3": "https://download.bell-sw.com/java/8u392+9/bellsoft-jdk8u392+9-windows-amd64-lite.zip",
+            "v4": "https://download.bell-sw.com/java/21.0.3+10/bellsoft-jdk21.0.3+10-windows-amd64-lite.zip",
         }
     },
     "linux": {
@@ -86,21 +88,25 @@ java_versions = {
             "v1": "https://download.bell-sw.com/java/17.0.9+11/bellsoft-jdk17.0.9+11-linux-i586-lite.tar.gz",
             "v2": "https://download.bell-sw.com/java/11.0.21+10/bellsoft-jdk11.0.21+10-linux-i586-lite.tar.gz",
             "v3": "https://download.bell-sw.com/java/8u392+9/bellsoft-jdk8u392+9-linux-i586-lite.tar.gz",
+            "v4": "https://download.bell-sw.com/java/21.0.3+10/bellsoft-jdk21.0.3+10-linux-i586-lite.tar.gz",
         },
         "x64": {
             "v1": "https://download.bell-sw.com/java/17.0.9+11/bellsoft-jdk17.0.9+11-linux-amd64-lite.tar.gz",
             "v2": "https://download.bell-sw.com/java/11.0.21+10/bellsoft-jdk11.0.21+10-linux-amd64-lite.tar.gz",
             "v3": "https://download.bell-sw.com/java/8u392+9/bellsoft-jdk8u392+9-linux-amd64-lite.tar.gz",
+            "v4": "https://download.bell-sw.com/java/21.0.3+10/bellsoft-jdk21.0.3+10-linux-amd64-lite.tar.gz",
         },
         "arm": {
             "v1": "https://download.bell-sw.com/java/17.0.9+11/bellsoft-jdk17.0.9+11-linux-aarch64-lite.tar.gz",
             "v2": "https://download.bell-sw.com/java/11.0.21+10/bellsoft-jdk11.0.21+10-linux-aarch64-full.tar.gz",
             "v3": "https://download.bell-sw.com/java/8u392+9/bellsoft-jdk8u392+9-linux-aarch64-lite.tar.gz",
+            "v4": "https://download.bell-sw.com/java/21.0.3+10/bellsoft-jdk21.0.3+10-linux-aarch64-lite.tar.gz",
         },
         "arm32": {  # 假设这是 ARM 32位的键
             "v1": "https://download.bell-sw.com/java/17.0.9+11/bellsoft-jdk17.0.9+11-linux-arm32-vfp-hflt-lite.tar.gz",
             "v2": "https://download.bell-sw.com/java/11.0.21+10/bellsoft-jdk11.0.21+10-linux-arm32-vfp-hflt-lite.tar.gz",
             "v3": "https://cdn.azul.com/zulu-embedded/bin/zulu8.74.0.17-ca-jdk8.0.392-linux_aarch32sf.tar.gz",
+            "v4": "https://download.bell-sw.com/java/21.0.3+10/bellsoft-jdk21.0.3+10-linux-arm32-vfp-hflt.tar.gz",
         },
     },
     "darwin": {
@@ -108,11 +114,13 @@ java_versions = {
             "v1": "https://download.bell-sw.com/java/17.0.9+11/bellsoft-jdk17.0.9+11-macos-amd64-lite.tar.gz",
             "v2": "https://download.bell-sw.com/java/11.0.21+10/bellsoft-jdk11.0.21+10-macos-amd64-lite.tar.gz",
             "v3": "https://download.bell-sw.com/java/8u392+9/bellsoft-jdk8u392+9-macos-amd64-lite.tar.gz",
+            "v4": "https://download.bell-sw.com/java/21.0.3+10/bellsoft-jdk21.0.3+10-macos-amd64-lite.tar.gz"
         },
         "arm": {
             "v1": "https://download.bell-sw.com/java/17.0.9+11/bellsoft-jdk17.0.9+11-macos-aarch64-lite.tar.gz",
             "v2": "https://download.bell-sw.com/java/11.0.21+10/bellsoft-jdk11.0.21+10-macos-aarch64-lite.tar.gz",
             "v3": "https://download.bell-sw.com/java/8u392+9/bellsoft-jdk8u392+9-macos-aarch64-lite.tar.gz",
+            "v4": "https://download.bell-sw.com/java/21.0.3+10/bellsoft-jdk21.0.3+10-macos-aarch64-lite.tar.gz",
         }
     }
 }
@@ -150,9 +158,12 @@ else:
 java_lite_v1_url = get_java_lite_url(os_name, arch_key, "v1")
 java_lite_v2_url = get_java_lite_url(os_name, arch_key, "v2")
 java_lite_v3_url = get_java_lite_url(os_name, arch_key, "v3")
+java_lite_v4_url = get_java_lite_url(os_name, arch_key, "v4")
 
 download_urls = {
     # 原版部分
+    "Minecraft_server_1.20.6": "https://piston-data.mojang.com/v1/objects/145ff0858209bcfc164859ba735d4199aafa1eea/server.jar",
+    "Minecraft_server_1.20.5": "https://piston-data.mojang.com/v1/objects/79493072f65e17243fd36a699c9a96b4381feb91/server.jar",
     "Minecraft_server_1.20.4": "https://piston-data.mojang.com/v1/objects/8dd1a28015f51b1803213892b50b7b4fc76e594d/server.jar",
     "Minecraft_server_1.20.3": "https://piston-data.mojang.com/v1/objects/4fb536bfd4a83d61cdbaf684b8d311e66e7d4c49/server.jar",
     "Minecraft_server_1.20.2": "https://piston-data.mojang.com/v1/objects/5b868151bd02b41319f54c8d4061b8cae84e665c/server.jar",
@@ -282,6 +293,8 @@ download_urls = {
     "Forge_server_1.6.1": "https://gh.con.sh/?q=https://github.com/menxin123/Minecraft-server-installer/releases/download/forge/1.6.1.zip",
     "Forge_server_1.5.2": "https://gh.con.sh/?q=https://github.com/menxin123/Minecraft-server-installer/releases/download/forge/1.5.2.zip",
     # fabric部分
+    "Fabric_server_1.20.6": "https://meta.fabricmc.net/v2/versions/loader/1.20.6/0.15.10/1.0.1/server/jar",
+    "Fabric_server_1.20.5": "https://meta.fabricmc.net/v2/versions/loader/1.20.5/0.15.10/1.0.1/server/jar",
     "Fabric_server_1.20.4": "https://meta.fabricmc.net/v2/versions/loader/1.20.4/0.15.3/0.11.2/server/jar",
     "Fabric_server_1.20.3": "https://meta.fabricmc.net/v2/versions/loader/1.20.3/0.15.3/0.11.2/server/jar",
     "Fabric_server_1.20.2": "https://meta.fabricmc.net/v2/versions/loader/1.20.2/0.15.3/0.11.2/server/jar",
@@ -455,7 +468,9 @@ download_urls = {
     "Spigot_server_1.4.7": "https://cdn.getbukkit.org/spigot/spigot-1.4.7-R1.1-SNAPSHOT.jar",
     "Spigot_server_1.4.6": "https://cdn.getbukkit.org/spigot/spigot-1.4.6-R0.4-SNAPSHOT.jar",
     # Paper部分
-    "Paper_server_1.20.4": "https://api.papermc.io/v2/projects/paper/versions/1.20.4/builds/336/downloads/paper-1.20.4-336.jar",
+    "Paper_server_1.20.6": "https://api.papermc.io/v2/projects/paper/versions/1.20.6/builds/32/downloads/paper-1.20.6-32.jar",
+    "Paper_server_1.20.5": "https://api.papermc.io/v2/projects/paper/versions/1.20.5/builds/22/downloads/paper-1.20.5-22.jar",
+    "Paper_server_1.20.4": "https://api.papermc.io/v2/projects/paper/versions/1.20.4/builds/496/downloads/paper-1.20.4-496.jar",
     "Paper_server_1.20.2": "https://api.papermc.io/v2/projects/paper/versions/1.20.2/builds/318/downloads/paper-1.20.2-318.jar",
     "Paper_server_1.20.1": "https://api.papermc.io/v2/projects/paper/versions/1.20.1/builds/196/downloads/paper-1.20.1-196.jar",
     "Paper_server_1.20": "https://api.papermc.io/v2/projects/paper/versions/1.20/builds/17/downloads/paper-1.20-17.jar",
@@ -506,7 +521,8 @@ download_urls = {
     # java部分
     "java-lite-v1": java_lite_v1_url,
     "java-lite-v2": java_lite_v2_url,
-    "java-lite-v3": java_lite_v3_url
+    "java-lite-v3": java_lite_v3_url,
+    "java-lite-v4": java_lite_v4_url
 }
 
 # 必备文件的下载链接
@@ -686,6 +702,8 @@ def download_version_files(version, version_data):
 
 version_files_mapping = {
     "Minecraft_server": {
+        "1.20.6": ["Minecraft_server_1.20.6", "java-lite-v4"],
+        "1.20.5": ["Minecraft_server_1.20.5", "java-lite-v4"],
         "1.20.4": ["Minecraft_server_1.20.4", "java-lite-v1"],
         "1.20.3": ["Minecraft_server_1.20.3", "java-lite-v1"],
         "1.20.2": ["Minecraft_server_1.20.2", "java-lite-v1"],
@@ -853,6 +871,8 @@ version_files_mapping = {
         "1.5.2": ["Forge_server_1.5.2", "java-lite-v3"],
     },
     "Fabric_server": {
+        "1.20.6": ["Fabric_server_1.20.6", "java-lite-v4"],
+        "1.20.5": ["Fabric_server_1.20.5", "java-lite-v4"],
         "1.20.4": ["Fabric_server_1.20.4", "java-lite-v1"],
         "1.20.3": ["Fabric_server_1.20.3", "java-lite-v1"],
         "1.20.2": ["Fabric_server_1.20.2", "java-lite-v1"],
@@ -995,6 +1015,8 @@ version_files_mapping = {
         "1.8.8": ["Spigot_server_1.8.8", "java-lite-v3"]
     },
     "Paper_server": {
+        "1.20.6": ["Paper_server_1.20.6", "java-lite-v4"],
+        "1.20.5": ["Paper_server_1.20.5", "java-lite-v4"],
         "1.20.4": ["Paper_server_1.20.4", "java-lite-v1"],
         "1.20.2": ["Paper_server_1.20.2", "java-lite-v1"],
         "1.20.1": ["Paper_server_1.20.1", "java-lite-v1"],
